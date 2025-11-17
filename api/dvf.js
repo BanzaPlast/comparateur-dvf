@@ -1,8 +1,10 @@
 const https = require('https');
+const http = require('http');
 
 function fetchData(url) {
     return new Promise((resolve, reject) => {
-        https.get(url, (res) => {
+        const client = url.startsWith('https') ? https : http;
+        client.get(url, (res) => {
             let data = '';
             res.on('data', (chunk) => { data += chunk; });
             res.on('end', () => {
@@ -31,62 +33,62 @@ module.exports = async (req, res) => {
     }
 
     try {
-        const { citycode, postcode, street, typeLocal, surface } = req.body;
+        const { citycode, postcode, street, housenumber, typeLocal, surface } = req.body;
 
-        if (!citycode && !postcode) {
-            return res.status(400).json({ error: 'citycode ou postcode requis' });
+        if (!postcode && !citycode) {
+            return res.status(400).json({ error: 'postcode ou citycode requis' });
         }
 
-        let allTransactions = [];
+        // Construction de la requête pour l'API Etalab
+        let query = '';
         
-        // Recherche par code postal
-        if (postcode) {
-            try {
-                const url = `https://api.cquest.org/dvf?code_postal=${postcode}&type_local=${encodeURIComponent(typeLocal)}`;
-                const data = await fetchData(url);
-                
-                if (data && data.resultats && Array.isArray(data.resultats)) {
-                    allTransactions = data.resultats;
-                } else if (Array.isArray(data)) {
-                    allTransactions = data;
-                }
-            } catch (error) {
-                console.error('Erreur API postal:', error);
-            }
+        // Construire l'adresse complète si possible
+        if (housenumber && street && postcode) {
+            query = `${housenumber} ${street} ${postcode}`;
+        } else if (street && postcode) {
+            query = `${street} ${postcode}`;
+        } else if (postcode) {
+            query = postcode;
         }
 
-        // Recherche par citycode si pas assez
-        if (allTransactions.length < 10 && citycode) {
-            try {
-                const url = `https://api.cquest.org/dvf?code_commune=${citycode}&type_local=${encodeURIComponent(typeLocal)}`;
-                const data = await fetchData(url);
-                
-                if (data && data.resultats && Array.isArray(data.resultats)) {
-                    allTransactions = [...allTransactions, ...data.resultats];
-                } else if (Array.isArray(data)) {
-                    allTransactions = [...allTransactions, ...data];
-                }
-            } catch (error) {
-                console.error('Erreur API commune:', error);
-            }
-        }
+        console.log('Requête Etalab:', query);
 
-        if (allTransactions.length === 0) {
+        const url = `https://app.dvf.etalab.gouv.fr/api/transactions?q=${encodeURIComponent(query)}`;
+        console.log('URL complète:', url);
+
+        const data = await fetchData(url);
+        
+        console.log('Réponse reçue:', data ? 'oui' : 'non');
+
+        if (!data || !data.results || !Array.isArray(data.results)) {
             return res.status(200).json({ 
                 error: 'Aucune transaction trouvée',
                 transactions: []
             });
         }
 
+        let allTransactions = data.results;
+        console.log('Transactions totales:', allTransactions.length);
+
+        // Filtrer par type de local
+        if (typeLocal) {
+            allTransactions = allTransactions.filter(t => {
+                const type = t.type_local || '';
+                return type.toLowerCase() === typeLocal.toLowerCase();
+            });
+            console.log('Après filtrage type:', allTransactions.length);
+        }
+
         // Filtrer uniquement les ventes avec surface et valeur valides
         allTransactions = allTransactions.filter(t => {
-            const nature = t.nature_mutation || '';
             const surfaceTrans = parseFloat(t.surface_reelle_bati || t.surface_terrain || 0);
             const valeur = parseFloat(t.valeur_fonciere || 0);
-            return nature.toLowerCase().includes('vente') && surfaceTrans > 0 && valeur > 0;
+            return surfaceTrans > 0 && valeur > 0;
         });
+        
+        console.log('Après filtrage validité:', allTransactions.length);
 
-        // Filtrer par rue si disponible
+        // Identifier si on a des transactions de la même rue
         let transactionsMemeRue = [];
         if (street) {
             transactionsMemeRue = allTransactions.filter(t => {
@@ -94,16 +96,15 @@ module.exports = async (req, res) => {
                 const rueRecherchee = street.toLowerCase();
                 return adresseVoie.includes(rueRecherchee) || rueRecherchee.includes(adresseVoie);
             });
+            console.log('Même rue:', transactionsMemeRue.length);
         }
 
-        // NOUVEAU : Utiliser TOUTES les transactions (pas de filtrage par surface)
-        const transactionsAUtiliser = transactionsMemeRue.length > 5 ? transactionsMemeRue : allTransactions;
+        const transactionsARetourner = transactionsMemeRue.length > 0 ? transactionsMemeRue : allTransactions;
 
-        // Retourner TOUTES les transactions trouvées
         return res.status(200).json({
-            transactions: transactionsAUtiliser,
+            transactions: transactionsARetourner,
             memeRue: transactionsMemeRue.length > 0,
-            total: transactionsAUtiliser.length
+            total: transactionsARetourner.length
         });
 
     } catch (error) {
