@@ -10,14 +10,14 @@
       "use": "@vercel/static"
     },
     {
-      "src": "api/dvf.mjs",
+      "src": "api/dvf.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/api/dvf",
-      "dest": "/api/dvf.mjs"
+      "dest": "/api/dvf.js"
     },
     {
       "src": "/(.*)",
