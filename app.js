@@ -152,15 +152,6 @@ form.addEventListener('submit', async (e) => {
         let allTransactions = [...dvfData];
         console.log('Transactions totales dans le fichier:', allTransactions.length);
 
-        // Filtrer par code postal
-        if (currentAdresseData.postcode) {
-            allTransactions = allTransactions.filter(t => {
-                const codePostal = t.code_postal || '';
-                return codePostal === currentAdresseData.postcode;
-            });
-            console.log('Après filtrage code postal:', allTransactions.length);
-        }
-
         // Filtrer par type de local
         if (typeLocal) {
             allTransactions = allTransactions.filter(t => {
@@ -178,7 +169,7 @@ form.addEventListener('submit', async (e) => {
         });
         console.log('Après filtrage validité:', allTransactions.length);
 
-        // Identifier si on a des transactions de la même rue
+        // Filtrer principalement par adresse exacte (même rue)
         let transactionsMemeRue = [];
         if (currentAdresseData.street) {
             transactionsMemeRue = allTransactions.filter(t => {
@@ -186,13 +177,29 @@ form.addEventListener('submit', async (e) => {
                 const rueRecherchee = currentAdresseData.street.toLowerCase();
                 return adresseVoie.includes(rueRecherchee) || rueRecherchee.includes(adresseVoie);
             });
-            console.log('Même rue:', transactionsMemeRue.length);
+            console.log('Transactions de la même rue:', transactionsMemeRue.length);
         }
 
-        const transactionsARetourner = transactionsMemeRue.length > 0 ? transactionsMemeRue : allTransactions;
+        // Si on a des transactions de la même rue, on les utilise
+        // Sinon, on utilise le code postal comme fallback
+        let transactionsARetourner = transactionsMemeRue;
+        let memeRue = transactionsMemeRue.length > 0;
+
+        if (transactionsMemeRue.length === 0) {
+            console.log('Aucune transaction dans la même rue, utilisation du code postal comme fallback');
+            if (currentAdresseData.postcode) {
+                transactionsARetourner = allTransactions.filter(t => {
+                    const codePostal = t.code_postal || '';
+                    return codePostal === currentAdresseData.postcode;
+                });
+                console.log('Transactions dans le code postal:', transactionsARetourner.length);
+            } else {
+                transactionsARetourner = allTransactions;
+            }
+        }
 
         if (transactionsARetourner.length === 0) {
-            throw new Error('Aucune transaction trouvée pour cette zone');
+            throw new Error('Aucune transaction trouvée pour cette adresse ou zone');
         }
 
         afficherResultats(
@@ -201,7 +208,7 @@ form.addEventListener('submit', async (e) => {
             prix,
             surface,
             transactionsARetourner,
-            transactionsMemeRue.length > 0
+            memeRue
         );
         
     } catch (error) {
