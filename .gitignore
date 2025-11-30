@@ -1,0 +1,13 @@
+# Fichiers de données DVF (peuvent être très gros)
+data/*.json
+!data/exemple.json
+
+# Node modules (si utilisé)
+node_modules/
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Fichiers de log
+*.log

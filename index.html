@@ -309,7 +309,48 @@ DOCTYPE html>
             color: #666;
             margin-top: 5px;
         }
-        
+
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 2px dashed #667eea;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .file-upload-label:hover {
+            background: #f5f7ff;
+            border-color: #764ba2;
+        }
+
+        .file-upload.has-file .file-upload-label {
+            background: #ecfdf5;
+            border-color: #10b981;
+            color: #10b981;
+        }
+
         @media (max-width: 480px) {
             .stats-grid {
                 grid-template-columns: 1fr;
@@ -326,6 +367,17 @@ DOCTYPE html>
         
         <div class="card" id="formCard">
             <form id="compareForm" autocomplete="off">
+                <div class="form-group">
+                    <label for="dvfFile">📁 Fichier DVF (JSON)</label>
+                    <div class="file-upload" id="fileUploadContainer">
+                        <input type="file" id="dvfFile" accept=".json" required>
+                        <div class="file-upload-label" id="fileUploadLabel">
+                            📂 Sélectionner un fichier DVF (JSON)
+                        </div>
+                    </div>
+                    <div class="help-text">Chargez votre fichier de données DVF au format JSON</div>
+                </div>
+
                 <div class="form-group">
                     <label for="adresse">📍 Adresse complète</label>
                     <input 

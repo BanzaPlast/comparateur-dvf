@@ -1,0 +1,112 @@
+[
+  {
+    "id_mutation": "2023-001",
+    "date_mutation": "2023-06-15",
+    "valeur_fonciere": 280000,
+    "adresse_numero": "5",
+    "adresse_nom_voie": "Rue Victor Hugo",
+    "code_postal": "75016",
+    "type_local": "Appartement",
+    "surface_reelle_bati": 45,
+    "surface_terrain": null
+  },
+  {
+    "id_mutation": "2023-002",
+    "date_mutation": "2023-05-20",
+    "valeur_fonciere": 520000,
+    "adresse_numero": "12",
+    "adresse_nom_voie": "Avenue Foch",
+    "code_postal": "75016",
+    "type_local": "Appartement",
+    "surface_reelle_bati": 85,
+    "surface_terrain": null
+  },
+  {
+    "id_mutation": "2023-003",
+    "date_mutation": "2023-04-10",
+    "valeur_fonciere": 350000,
+    "adresse_numero": "8",
+    "adresse_nom_voie": "Rue de la Pompe",
+    "code_postal": "75016",
+    "type_local": "Appartement",
+    "surface_reelle_bati": 55,
+    "surface_terrain": null
+  },
+  {
+    "id_mutation": "2023-004",
+    "date_mutation": "2023-03-22",
+    "valeur_fonciere": 420000,
+    "adresse_numero": "15",
+    "adresse_nom_voie": "Avenue Victor Hugo",
+    "code_postal": "75016",
+    "type_local": "Appartement",
+    "surface_reelle_bati": 68,
+    "surface_terrain": null
+  },
+  {
+    "id_mutation": "2023-005",
+    "date_mutation": "2023-02-18",
+    "valeur_fonciere": 195000,
+    "adresse_numero": "22",
+    "adresse_nom_voie": "Rue de Passy",
+    "code_postal": "75016",
+    "type_local": "Appartement",
+    "surface_reelle_bati": 32,
+    "surface_terrain": null
+  },
+  {
+    "id_mutation": "2023-006",
+    "date_mutation": "2023-01-30",
+    "valeur_fonciere": 650000,
+    "adresse_numero": "7",
+    "adresse_nom_voie": "Avenue Foch",
+    "code_postal": "75016",
+    "type_local": "Appartement",
+    "surface_reelle_bati": 105,
+    "surface_terrain": null
+  },
+  {
+    "id_mutation": "2022-050",
+    "date_mutation": "2022-12-15",
+    "valeur_fonciere": 1200000,
+    "adresse_numero": "10",
+    "adresse_nom_voie": "Avenue Foch",
+    "code_postal": "75016",
+    "type_local": "Maison",
+    "surface_reelle_bati": 180,
+    "surface_terrain": 250
+  },
+  {
+    "id_mutation": "2022-051",
+    "date_mutation": "2022-11-20",
+    "valeur_fonciere": 890000,
+    "adresse_numero": "45",
+    "adresse_nom_voie": "Rue de la Tour",
+    "code_postal": "75016",
+    "type_local": "Maison",
+    "surface_reelle_bati": 145,
+    "surface_terrain": 180
+  },
+  {
+    "id_mutation": "2022-052",
+    "date_mutation": "2022-10-05",
+    "valeur_fonciere": 310000,
+    "adresse_numero": "18",
+    "adresse_nom_voie": "Rue Spontini",
+    "code_postal": "75016",
+    "type_local": "Appartement",
+    "surface_reelle_bati": 52,
+    "surface_terrain": null
+  },
+  {
+    "id_mutation": "2022-053",
+    "date_mutation": "2022-09-12",
+    "valeur_fonciere": 465000,
+    "adresse_numero": "3",
+    "adresse_nom_voie": "Place du Trocadéro",
+    "code_postal": "75016",
+    "type_local": "Appartement",
+    "surface_reelle_bati": 72,
+    "surface_terrain": null
+  }
+]
